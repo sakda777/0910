@@ -7,8 +7,8 @@
 <style>
   :root {
     --accent: #6ee7b7;
-    --glass: rgba(255, 255, 255, 0.12);
-    --glass-border: rgba(255, 255, 255, 0.22);
+    --glass: rgba(255, 255, 255, 0.14);
+    --glass-border: rgba(255, 255, 255, 0.25);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,26 +21,34 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: #0b0b0f;
+    /* 兜底背景色，不再是纯黑 */
+    background-color: #1a1a2e;
   }
 
   /* ===== 背景图 ===== */
   .bg {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: -2;
     background-image: url("https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1920&q=80");
     background-size: cover;
     background-position: center;
-    /* 图片加载不出来时的兜底底色 */
-    background-color: #1b1b2b;
+    -webkit-background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #1a1a2e;
   }
-  /* 背景上的暗色遮罩，让文字看得清 */
+  /* 背景遮罩：用纯色代替渐变，兼容旧内核 */
   .bg::after {
     content: "";
     position: absolute;
-    inset: 0;
-    background: linear-gradient(160deg, rgba(8, 10, 25, 0.5), rgba(8, 10, 25, 0.85));
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(8, 10, 25, 0.75);
   }
 
   /* ===== 玻璃卡片 ===== */
@@ -54,8 +62,6 @@
     border-radius: 24px;
     background: var(--glass);
     border: 1px solid var(--glass-border);
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
     overflow: hidden;
     user-select: none;
@@ -299,7 +305,6 @@
     padding: 8px 18px;
     border-radius: 999px;
     background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(10px);
     font-size: 13px;
     white-space: nowrap;
     opacity: 0;
@@ -374,8 +379,8 @@
    src 支持：网络地址 或 本地相对路径（如 "music/song1.mp3"）
    ========================================================= */
 const songs = [
-  { title: '神秘优美',  artist: 'Demo Artist', src: 'http://wx.welangdu.com/ReadWeb/ImagesUser/backAudio/BackAudio_23388_2205131039.mp3' },
-  { title: '优美大气',  artist: 'Demo Artist', src: 'http://wx.welangdu.com/ReadWeb/ImagesUser/backAudio/BackAudio_23389_2205131039.mp3' },
+  { title: '夏日晚风',  artist: 'Demo Artist', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+  { title: '城市夜景',  artist: 'Demo Artist', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
   { title: '海边散步',  artist: 'Demo Artist', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
   { title: '清晨咖啡',  artist: 'Demo Artist', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
   { title: '星空列车',  artist: 'Demo Artist', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
@@ -420,8 +425,8 @@ const toastEl    = $('toast');
 const audio = new Audio();
 audio.preload = 'metadata';
 
-let currentIndex = 0;      // 当前歌曲下标
-let loaded       = false;  // 是否已经绑定过音频
+let currentIndex = 0;
+let loaded       = false;
 let isPlaying    = false;
 let dragging     = false;
 let modeIndex    = 0;
@@ -515,7 +520,6 @@ function togglePlay() {
 
 /* ===== 下一首 ===== */
 function next(auto = false) {
-  // 单曲循环：自动结束时重播
   if (mode === 'single' && auto) {
     audio.currentTime = 0;
     audio.play().catch(() => {});
@@ -532,7 +536,7 @@ function next(auto = false) {
 
 /* ===== 上一首 ===== */
 function prev() {
-  if (loaded && audio.currentTime > 3) {   // 播放超过 3 秒则回到开头
+  if (loaded && audio.currentTime > 3) {
     audio.currentTime = 0;
     return;
   }
@@ -616,7 +620,7 @@ volBtn.addEventListener('click', () => {
   toast(audio.muted ? '已静音' : '已取消静音');
 });
 
-/* 键盘快捷键：空格播放/暂停，左右方向键切歌 */
+/* 键盘快捷键 */
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
   if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
