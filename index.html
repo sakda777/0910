@@ -67,87 +67,99 @@
     animation: rise 0.6s ease both;
   }
 
-  /* ===== 针对宽屏/横屏设备（如平板）的专门放大 ===== */
+    /* ===== 针对宽屏/横屏设备（如平板、车机）的专门放大 ===== */
   @media (min-width: 768px) {
     body {
-      padding: 16px; /* 大屏下减小页面外围留白 */
+      padding: 16px;
     }
     .player {
-      width: 85%; /* 大屏占据 85% 宽度 */
-      max-width: 1100px;
-      gap: 24px;
-      padding: 40px 50px;
+      width: 90%;
+      max-width: 1200px;
+      gap: 28px;       /* 间距进一步加大 */
+      padding: 48px 60px; /* 内边距加大，避免拥挤 */
       border-radius: 32px;
     }
     .now {
-      gap: 20px;
+      gap: 24px;
     }
     .disc {
-      width: 72px; /* 圆盘放大 */
-      height: 72px;
+      width: 90px;   /* 唱片圆盘大幅放大 */
+      height: 90px;
     }
     .disc::after {
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
     }
     .meta h1 {
-      font-size: 22px; /* 歌名放大 */
+      font-size: 32px; /* 歌名大幅放大 */
+      line-height: 1.3;
     }
     .meta p {
-      font-size: 16px;
-      margin-top: 6px;
+      font-size: 20px; /* 歌手大幅放大 */
+      margin-top: 8px;
     }
     .bar-row {
-      font-size: 14px;
+      font-size: 20px; /* 时间刻度大幅放大 */
     }
     .progress {
-      height: 8px;
+      height: 12px;   /* 进度条加粗 */
+    }
+    .progress .fill::after {
+      width: 18px;    /* 进度点加大 */
+      height: 18px;
+      right: -8px;
     }
     .ctrl {
-      width: 52px; /* 控制按钮放大 */
-      height: 52px;
+      width: 64px;    /* 控制按钮加大 */
+      height: 64px;
     }
     .ctrl svg {
-      width: 26px;
-      height: 26px;
+      width: 32px;
+      height: 32px;
     }
     .play-main {
-      width: 72px; /* 主播放按钮放大 */
-      height: 72px;
+      width: 88px;    /* 主播放按钮加大 */
+      height: 88px;
     }
     .play-main svg {
-      width: 34px;
-      height: 34px;
+      width: 44px;
+      height: 44px;
     }
     .list-head {
-      font-size: 14px;
+      font-size: 18px; /* 列表标题放大 */
     }
     .song {
-      padding: 12px 18px;
-      gap: 16px;
+      padding: 16px 24px; /* 列表项内边距加大 */
+      gap: 20px;
     }
     .song .num {
-      width: 28px;
-      flex: 0 0 28px;
-      font-size: 15px;
+      width: 36px;
+      flex: 0 0 36px;
+      font-size: 20px; /* 序号放大 */
     }
     .song .info .t {
-      font-size: 17px; /* 列表歌名放大 */
+      font-size: 26px; /* 列表歌名大幅放大 */
+      line-height: 1.4;
     }
     .song .info .a {
-      font-size: 14px;
-      margin-top: 3px;
+      font-size: 18px; /* 列表歌手放大 */
+      margin-top: 4px;
+    }
+    .dot {
+      border-left: 10px solid var(--accent);
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
     }
     .eq {
-      height: 18px;
-      gap: 3px;
+      height: 24px;
+      gap: 4px;
     }
     .eq i {
-      width: 4px;
+      width: 6px;
     }
-    .eq i:nth-child(1) { height: 9px; }
-    .eq i:nth-child(2) { height: 17px; }
-    .eq i:nth-child(3) { height: 12px; }
+    .eq i:nth-child(1) { height: 12px; }
+    .eq i:nth-child(2) { height: 22px; }
+    .eq i:nth-child(3) { height: 16px; }
   }
 
   /* ===== 手机竖屏适配（保持原样） ===== */
