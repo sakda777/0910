@@ -21,7 +21,6 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
-    /* 兜底背景色，不再是纯黑 */
     background-color: #1a1a2e;
   }
 
@@ -40,7 +39,6 @@
     background-repeat: no-repeat;
     background-color: #1a1a2e;
   }
-  /* 背景遮罩：用纯色代替渐变，兼容旧内核 */
   .bg::after {
     content: "";
     position: absolute;
@@ -263,7 +261,6 @@
     text-overflow: ellipsis;
   }
 
-  /* 暂停时的小三角 */
   .dot {
     display: block;
     width: 0;
@@ -273,7 +270,6 @@
     border-bottom: 5px solid transparent;
   }
 
-  /* 播放中的跳动音柱 */
   .eq {
     display: flex;
     align-items: flex-end;
@@ -296,7 +292,6 @@
     50%      { transform: scaleY(1); }
   }
 
-  /* ===== 提示条 ===== */
   .toast {
     position: fixed;
     left: 50%;
@@ -314,7 +309,6 @@
   }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-  /* ===== 手机适配 ===== */
   @media (max-width: 480px) {
     body { padding: 12px; }
     .player { padding: 20px 16px; border-radius: 20px; gap: 14px; }
@@ -326,12 +320,10 @@
 </head>
 <body>
 
-  <!-- 背景图 -->
   <div class="bg"></div>
 
   <main class="player">
 
-    <!-- 当前播放 -->
     <section class="now">
       <div class="disc" id="disc"></div>
       <div class="meta">
@@ -340,14 +332,12 @@
       </div>
     </section>
 
-    <!-- 进度条 -->
     <section class="bar-row">
       <span id="curTime">0:00</span>
       <div class="progress" id="progress"><div class="fill" id="fill"></div></div>
       <span id="durTime">0:00</span>
     </section>
 
-    <!-- 控制按钮 -->
     <section class="controls">
       <button class="ctrl" id="modeBtn" title="播放模式"></button>
       <button class="ctrl" id="prevBtn" title="上一首">
@@ -362,7 +352,6 @@
       </button>
     </section>
 
-    <!-- 播放列表 -->
     <section class="list-head">
       <span>播放列表</span>
       <span id="count">0 首</span>
@@ -374,10 +363,6 @@
   <div class="toast" id="toast"></div>
 
 <script>
-/* =========================================================
-   1. 歌曲数据 —— 把 title / artist / src 换成你自己的即可
-   src 支持：网络地址 或 本地相对路径（如 "music/song1.mp3"）
-   ========================================================= */
 const songs = [
   { title: '夏日晚风',  artist: 'Demo Artist', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
   { title: '城市夜景',  artist: 'Demo Artist', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
@@ -386,7 +371,6 @@ const songs = [
   { title: '星空列车',  artist: 'Demo Artist', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
 ];
 
-/* ===== 图标 ===== */
 const ICONS = {
   play:  '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
   pause: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',
@@ -403,7 +387,6 @@ const MODES = [
   { key: 'shuffle', icon: ICONS.shuffle,   label: '随机播放' },
 ];
 
-/* ===== DOM ===== */
 const $ = id => document.getElementById(id);
 const playlistEl = $('playlist');
 const titleEl    = $('title');
@@ -421,7 +404,6 @@ const discEl     = $('disc');
 const countEl    = $('count');
 const toastEl    = $('toast');
 
-/* ===== 状态 ===== */
 const audio = new Audio();
 audio.preload = 'metadata';
 
@@ -432,7 +414,6 @@ let dragging     = false;
 let modeIndex    = 0;
 let mode         = 'list';
 
-/* ===== 工具 ===== */
 const fmt = t => {
   if (!isFinite(t) || t < 0) return '0:00';
   const m = Math.floor(t / 60);
@@ -448,7 +429,6 @@ function toast(msg) {
   toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1500);
 }
 
-/* ===== 渲染列表 ===== */
 function buildList() {
   playlistEl.innerHTML = '';
   songs.forEach((song, i) => {
@@ -471,7 +451,6 @@ function buildList() {
   highlight();
 }
 
-/* 高亮当前歌曲 */
 function highlight() {
   [...playlistEl.children].forEach((li, i) => {
     const num = li.querySelector('.num');
@@ -487,7 +466,6 @@ function highlight() {
   });
 }
 
-/* ===== 播放指定歌曲 ===== */
 function playSong(i) {
   if (i < 0 || i >= songs.length) return;
   currentIndex = i;
@@ -511,14 +489,12 @@ function playSong(i) {
   highlight();
 }
 
-/* ===== 播放 / 暂停 ===== */
 function togglePlay() {
   if (!loaded) { playSong(currentIndex); return; }
   if (audio.paused) audio.play().catch(() => {});
   else audio.pause();
 }
 
-/* ===== 下一首 ===== */
 function next(auto = false) {
   if (mode === 'single' && auto) {
     audio.currentTime = 0;
@@ -534,7 +510,6 @@ function next(auto = false) {
   playSong(i);
 }
 
-/* ===== 上一首 ===== */
 function prev() {
   if (loaded && audio.currentTime > 3) {
     audio.currentTime = 0;
@@ -549,7 +524,6 @@ function prev() {
   playSong(i);
 }
 
-/* ===== 进度条拖动 ===== */
 function seek(e) {
   const rect = progressEl.getBoundingClientRect();
   const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
@@ -568,7 +542,6 @@ progressEl.addEventListener('pointermove', e => { if (dragging) seek(e); });
 progressEl.addEventListener('pointerup',     () => { dragging = false; });
 progressEl.addEventListener('pointercancel', () => { dragging = false; });
 
-/* ===== 音频事件 ===== */
 audio.addEventListener('play', () => {
   isPlaying = true;
   playBtn.innerHTML = ICONS.pause;
@@ -601,7 +574,6 @@ audio.addEventListener('error', () => {
   if (loaded) toast('音频加载失败，请检查地址');
 });
 
-/* ===== 按钮事件 ===== */
 playBtn.addEventListener('click', togglePlay);
 nextBtn.addEventListener('click', () => next(false));
 prevBtn.addEventListener('click', prev);
@@ -620,12 +592,44 @@ volBtn.addEventListener('click', () => {
   toast(audio.muted ? '已静音' : '已取消静音');
 });
 
-/* 键盘快捷键 */
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
   if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
   if (e.code === 'ArrowRight') next(false);
   if (e.code === 'ArrowLeft')  prev();
+});
+
+/* =========================================================
+   ★ 新增：页面关闭 / 隐藏时，彻底停止音频
+   解决安卓 WebView、微信内置浏览器等环境下
+   关闭页面后音乐仍然播放的问题
+   ========================================================= */
+function stopAudioCompletely() {
+  try {
+    if (!audio.paused) audio.pause();
+    audio.currentTime = 0;
+    // 清空 src 并重新 load，强制释放底层媒体资源
+    audio.removeAttribute('src');
+    audio.src = '';
+    audio.load();
+  } catch (e) {
+    // 忽略任何清理异常
+  }
+}
+
+// 页面即将卸载（关闭标签、刷新、跳转）
+window.addEventListener('beforeunload', stopAudioCompletely);
+// 页面进入后台/被隐藏（移动端切后台、被系统回收前）
+window.addEventListener('pagehide', stopAudioCompletely);
+// 老式浏览器兜底
+window.addEventListener('unload', stopAudioCompletely);
+
+// 补充：当页面不可见时也暂停（切后台、锁屏、切到其它 App）
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && !audio.paused) {
+    audio.pause();
+    // 如果不想切后台就暂停，可以去掉这行
+  }
 });
 
 /* ===== 初始化 ===== */
